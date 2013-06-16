@@ -1,7 +1,7 @@
 ﻿<?php
 define('base_path',$_SERVER['DOCUMENT_ROOT']);//����������ľ��·��
 
-define('smarty_path','/Local_Photowall');//����smartyĿ¼�ľ��·��--������
+define('smarty_path','/LocalPhotowall');//����smartyĿ¼�ľ��·��--������
 
 require (base_path.smarty_path."/smarty/Smarty.class.php");//����Smarty����ļ�
 
