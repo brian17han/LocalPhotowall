@@ -1,0 +1,156 @@
+/* CSS login Document */
+html,
+body {
+	margin:0;
+	padding:0;
+	height:100%;
+	width:100%;
+    font-family:"微软雅黑 UI",Verdana,"宋体";
+}
+.wrapper {
+	min-height:100%;
+	position:relative;
+}
+p{
+	font-size:12px;
+	color:#666666;
+}
+h3{
+	font-size:16px;
+	color:#333;
+	display:inline;
+}
+h4{
+	font-size:14px;
+	color:#333;
+	display:inline;
+}
+h5{
+	display:inline;
+}
+h6{
+	display:inline;
+	color:#666666 !important;
+}
+
+a:link{
+	text-decoration: none;
+}
+a:hover p{
+	color:#991414;
+	text-decoration:none;
+}
+.header{
+	height:200px;
+	background-image:url(../img/register_bkg.png);
+	background-repeat:repeat-x;
+	background-size:100% 200px;
+	margin:0px;
+	width: 100%;
+	position: fixed;
+	z-index: 999;
+}
+
+.main_content{
+	display:block;
+	left:0;
+	top:50px;
+	height:auto;
+	width:900px;
+	margin-left:auto;
+	margin-right:auto;
+	padding-top: 210px;
+	min-height:500px;
+}
+/*-----------content--------starts----------------------------*/
+/*for show_wall.html starts*/
+.bg-gray{
+	background-color:#f4f4f4;
+	border:1px #999 solid;
+	border-radius:3px;
+	-moz-border-radius:3px;
+	-webkit-border-radius:3px;
+	-o-border-radius:3px;
+	-webkit-box-shadow: 0 8px 6px -6px black;
+	-moz-box-shadow: 0 8px 6px -6px black;
+	box-shadow: 0 8px 6px -6px black;
+}
+.vip{
+		color:#dab244 !important;
+}
+
+.rec-friend{
+	padding-bottom:5px;
+}
+.location{
+	font-size:12px;
+	color:#991414;
+}
+.text-white{
+	color:white;
+}
+.line_holder{
+	height:10px;
+}
+.pagination a{
+	color:#666;
+}
+.pagination a:hover{
+	color:#991414;
+}
+#myTabs{
+    background-size: 100% 40px !important;
+}
+#myModal{
+    top:0 !important;
+}
+
+/*------------scrollbar style-----------*/
+/* Let's get this party started */
+::-webkit-scrollbar {
+    width: 8px;
+}
+ 
+/* Track */
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    background: rgba(255,0,0,0.8); 
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+}
+::-webkit-scrollbar-thumb:window-inactive {
+	background: rgba(255,0,0,0.4); 
+}
+
+/*for show_wall.html ends*/
+
+/*-----------content--------ends----------------------------*/
+/*-----------footer--------starts----------------------------*/
+.footer{
+	display:block;
+	width:100%;
+	left:0;
+	height:80px;
+	margin:20px 0;
+}
+.copyright{
+	width:450px;
+	display:block;
+	margin-left:auto;
+	margin-right:auto;
+	text-align:center;
+}
+.copyright p{
+	padding:0;
+	margin:0;
+}
+/*-----------footer--------ends----------------------------*/
+
+

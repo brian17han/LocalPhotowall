@@ -1,0 +1,20 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../../View/resources/css/home_page.css">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+{#$songyu#}
+<form action="add_album_action.php" id="form1" method="post" enctype="multipart/form-data">
+	album name:<input type="text" name="album_name" id="album_name"  /><br/>
+	album frontcover:<input type="file" name="album_frontcover" id="album_frontcover" /><br/>
+	set private?<br/>
+	   yes:<input type="radio" name="is_encrypt" id="is_encrypt" value="yes" /><br/>
+       no:<input type="radio" name="is_encrypt" id="is_encrypt" value="no" /><br/>
+       <input type="hidden" value="yes" name="submit_test"  />
+    <input type="submit" value="submit" />
+</form>
+</body>
+</html>

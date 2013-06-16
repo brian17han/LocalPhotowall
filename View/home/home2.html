@@ -1,0 +1,1067 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- <script type="text/javascript" src="../../Controller/resources/JQuery_Plugins/ajax_form/jquery.min.js"></script> -->
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <script type="text/javascript" src="../../View/resources/js/jquery.js"></script>
+    <script type="text/javascript" src="../../Controller/resources/JQuery_Plugins/ajax_form/jquery.form.js"></script>
+    <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.9/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="../../View/resources/js/validation.js"></script>
+    <script type="text/javascript" src="../../View/resources/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../View/resources/css/walls.css">
+    <link rel="stylesheet" type="text/css" href="../../View/resources/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../View/resources/css/bootstrap-responsive.css">
+    <link rel="stylesheet" type="text/css" href="../../View/resources/css/recommended-styles.css">
+    <script>
+var html=new Array();
+var marked_people_photo_array=new Array();
+function finish_mark_people()
+{
+	var postToTag=$("#postToTag").val();
+	var postToFans=$("#postToFans").val();
+	var postToFriend=$("#postToFriend").val();
+	var mark_description=$("#mark_description").val();
+	var photo_path=document.getElementById("at_people").src;
+	//alert(photo_path);
+	marked_people_photo_array.push(photo_path+","+postToTag+","+postToFans+","+postToFriend+","+mark_description);
+}
+var index=0;
+function cancel_upload()
+{
+	for(var i=0;i<html.length;i++)
+		html[i]="";
+}
+function At_People(full_path)
+{
+	var at_people=document.getElementById("at_people");
+	at_people.src=full_path;
+}
+function finish()
+{
+	alert("上传成功!");
+}
+function Change_MkPple_Array_To_String(array)
+{
+	var result="";
+	for(var i=0;i<array.length;i++)
+	{
+		if(i==array.length-1)
+		   result+=array[i];
+		else
+		   result+=array[i]+"|";
+	}
+	return result;
+}
+function finish_upload_photo()
+{
+	//var form_obj=document.getElementById("upload_final").submit();
+	var marked_string=Change_MkPple_Array_To_String(marked_people_photo_array);
+	//alert(marked_string);
+	$("#upload_final").ajaxForm({
+		data:{mark_info:marked_string},
+		success:finish
+    }).submit();
+    for(var i=0;i<html.length;i++){html[i]="";}
+}
+function removeImg(obj,photo_name)
+{
+	var id=obj.id;
+	html[id]="";
+	var name=photo_name;
+	$.ajax({
+        type: "POST",
+        url: "../photo/delete_photo_action.php",
+        data: { photo_path:name }
+    }).done(function( msg ) {
+    });
+}
+
+function showResponse(responseText, statusText)
+{
+	//alert(responseText+","+statusText);
+	html.push(responseText);
+	//html+=responseText;
+	var html_str="";
+	for(var i=0;i<html.length;i++)
+	{
+		html_str+=html[i];
+	}
+	index=index+1;
+	$("#modal_body").html(html_str);
+	$(".upload-remove-img").tooltip({
+                'trigger': 'hover',
+                'placement': 'top'
+            });
+    $('.upload-remove-img').click(function() {$(this).parents('.upload-img').fadeOut("slow",function(){$(this).remove()}); }); /*remove upload img*/
+}
+		$(document).ready(function(){
+			$(":text").each(function(){
+				$(this).val("");
+			});
+			$(":password").val("");
+			
+			$('#photoimg').live('change', function(){
+			      $("#modal_body").append('<img src="../../Controller/resources/img/loader.gif" alt="Uploading...."/>');
+			$("#upload_photo_form").ajaxForm({
+				        data:{photo_index:index},
+						target: '#modal_body',
+						success:showResponse
+		          }).submit();
+			});
+		});
+	</script>
+    <title>Photowall-个人主页</title>
+</head>
+<body>
+<div class="wrapper">
+    <div class="header">
+        <!--nav bar starts-->
+        <div id="nav_bar">
+            <div class="banner">
+            	<div id="page_name"><p>个人主页</p><br /><p>HOMEPAGE</p></div>
+            	<img class="logo" src="../../View/resources/img/logo_login.png" width="270px" height="108px" alt="photowall" longdesc="http://www.photowall.cc">
+            </div>
+        <ul id="nav">
+            <li class="current"><a href="../home/home.php" style="width:20px;"><i class="icon-home icon-white"></i></a></li>
+            <li><a href="#">我的墙</a>
+                <ul>
+                    <li><a href="#">展示墙</a>
+                    <!--
+                        <ul>
+                            <li><a href="#">Sub-Level Item</a></li>
+                            <li><a href="#">Sub-Level Item</a>
+                                <ul>
+                                    <li><a href="#">Sub-Level Item</a></li>
+                                    <li><a href="#">Sub-Level Item</a></li>
+                                    <li><a href="#">Sub-Level Item</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="#">Sub-Level Item</a></li>
+                        </ul>
+                        </ul>-->
+                    </li>
+                    <li><a href="#">贴友墙</a></li>
+                </ul>
+            </li>
+            <li><a href="../relation/profile_people.php?see_what=null">贴友薄</a>
+                <ul>
+                    <li><a href="../relation/profile_people.php?see_what=friends">我的贴友</a></li>
+                    <li><a href="../relation/profile_people.php?see_what=concerns">我的关注</a></li>
+                    <li><a href="../relation/profile_people.php?see_what=fans">我的粉丝</a></li>
+                </ul>
+            </li>
+            <li><a href="#">个人资料</a>
+                <ul>
+                    <li><a href="../profile/profile_form.php">详细资料</a></li>
+                    <li><a href="#">个人头像</a></li>
+                </ul>
+            </li>
+            <li><a href="#">设置中心</a>
+                <ul>
+                    <li><a href="#">账号</a></li>
+                    <li><a href="#">安全</a></li>
+                    <li><a href="#">隐私</a></li>
+                    <li><a href="#">绑定</a></li>
+                </ul>
+            </li>
+			<li style="width:250px; height:34px;">
+                <form method="get" action="/search" id="search">
+                  	<input name="q" type="text" size="30" placeholder="搜索-贴友/粉丝/关注" />
+                    <button type="submit" class="btn btn-nav" value="submit"><i class="icon-search"></i></button>
+                </form>
+            </li>
+            <li class="current">
+                <a href="#uploadModal" data-toggle="modal" style="width:15px; margin-left:30px;"><i class="icon-camera icon-white"></i></a>
+            </li>
+        </ul>
+        </div>
+       <!--nav bar ends-->
+    </div>
+    <div class="main_content">
+    	<div class="row-fluid">
+        	<div class="span8">
+            	<div class="row-fluid">
+                    <div class="span12 bg-gray">
+                        <div class="line_holder"></div>
+                        <p class="text-error text-right"><big>Photowall.cc 公测版1.0正式启动面世。打造您的照片墙吧！&nbsp;&nbsp;</big></p>
+                        <p class="text-right">“贴”在您的照片展示墙上，打造您的个性相册；“贴”在您好友的信息墙上，分享您的每时每刻！&nbsp;&nbsp;</p>
+                        <div id="myCarousel" class="carousel slide">
+                          <ol class="carousel-indicators">
+                            <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                            <li data-target="#myCarousel" data-slide-to="1"></li>
+                            <li data-target="#myCarousel" data-slide-to="2"></li>
+                          </ol>
+                          <!-- Carousel items -->
+                          <div class="carousel-inner" style="height:150px;">
+                            <div class="active item"><img src="http://twitter.github.io/bootstrap/assets/img/bootstrap-mdo-sfmoma-01.jpg">
+                                <div class="carousel-caption">
+                                    <h4>图1</h4>
+                                    <p>photowall上线啦</p>
+                                </div>
+                            </div>
+                            <div class="item"><img src="http://twitter.github.io/bootstrap/assets/img/bootstrap-mdo-sfmoma-02.jpg"></div>
+                            <div class="item"><img src="http://twitter.github.io/bootstrap/assets/img/bootstrap-mdo-sfmoma-03.jpg"></div>
+                          </div>
+                          <!-- Carousel nav -->
+                          <a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
+                          <a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
+                        </div>
+                    </div><!--span8>span12-1 ends-->
+                </div>
+            	<div class="row-fluid">
+                	<div class="line_holder">
+                    	<p></p>
+                    </div>
+                </div>
+            	<div class="row-fluid">
+                    <div class="span12 bg-gray">
+                        <div class="tabbable">
+                            <ul class="red-bar nav nav-tabs" id="myTabs">
+                                <li class="active"><a href="#home" data-toggle="tab">贴友墙动态 <span class="badge">6</span></a></li>
+                                <li><a href="#bar" data-toggle="tab">照片墙动态 <span class="badge">1</span></a></li>
+                            </ul>
+
+                            <div class="news-box tab-content">
+                                <div class="tab-pane active" id="home">
+                                    <div class="row-fluid photo-info">
+                                        <div class="span4">
+                                            <a href="#myModal" class="no-link offset1" data-toggle="modal">
+                                                <img src="../../View/resources/img/follower/profile_img_test1.png" class="img-polaroid img-large"/>
+                                            </a>
+                                        </div>
+                                        <div class="span7">
+                                            <h5>ANGLED1</h5>
+                                            <p>于2012年12月10日11:36上传<font class="text-error">3</font>张新照片！</p>
+                                            <p>通过网页版客户端</p>
+                                            <i class="icon-map-marker"></i><a class="location" href="#">五四广场</a>
+                                            <hr/>
+                                        </div>
+                                    </div><!--single img-info-->
+                                    <div class="row-fluid photo-info">
+                                        <div class="line_holder"></div>
+                                        <div class="span4">
+                                            <div class="span1"></div>
+                                            <img src="../../View/resources/img/follower/profile_img_test1.png" class="img-polaroid img-large"/>
+                                        </div>
+                                        <div class="span7">
+                                            <h5>ANGLED2</h5>
+                                            <p>于2012年12月10日11:36上传<font class="text-error">3</font>张新照片！</p>
+                                            <p>通过网页版客户端</p>
+                                            <i class="icon-map-marker"></i><a class="location" href="#">五四广场</a>
+                                            <hr/>
+                                        </div>
+                                    </div><!--single img-info-->
+                                    <div class="row-fluid photo-info">
+                                        <div class="line_holder"></div>
+                                        <div class="span4">
+                                            <div class="span1"></div>
+                                            <img src="../../View/resources/img/follower/profile_img_test1.png" class="img-polaroid img-large"/>
+                                        </div>
+                                        <div class="span7">
+                                            <h5>ANGLED3</h5>
+                                            <p>于2012年12月10日11:36上传<font class="text-error">3</font>张新照片！</p>
+                                            <p>通过网页版客户端</p>
+                                            <i class="icon-map-marker"></i><a class="location" href="#">五四广场</a>
+                                            <hr/>
+                                        </div>
+                                    </div><!--single img-info-->
+                                    <div class="row-fluid photo-info">
+                                        <div class="line_holder"></div>
+                                        <div class="span4">
+                                            <div class="span1"></div>
+                                            <img src="../../View/resources/img/follower/profile_img_test1.png" class="img-polaroid img-large"/>
+                                        </div>
+                                        <div class="span7">
+                                            <h5>ANGLED4</h5>
+                                            <p>于2012年12月10日11:36上传<font class="text-error">3</font>张新照片！</p>
+                                            <p>通过网页版客户端</p>
+                                            <i class="icon-map-marker"></i><a class="location" href="#">五四广场</a>
+                                            <hr/>
+                                        </div>
+                                    </div><!--single img-info-->
+                                    <div class="row-fluid photo-info">
+                                        <div class="line_holder"></div>
+                                        <div class="span4">
+                                            <div class="span1"></div>
+                                            <img src="../../View/resources/img/follower/profile_img_test1.png" class="img-polaroid img-large"/>
+                                        </div>
+                                        <div class="span7">
+                                            <h5>ANGLED5</h5>
+                                            <p>于2012年12月10日11:36上传<font class="text-error">3</font>张新照片！</p>
+                                            <p>通过网页版客户端</p>
+                                            <i class="icon-map-marker"></i><a class="location" href="#">五四广场</a>
+                                            <hr/>
+                                        </div>
+                                    </div><!--single img-info-->
+                                    <div class="row-fluid photo-info">
+                                        <div class="line_holder"></div>
+                                        <div class="span4">
+                                            <div class="span1"></div>
+                                            <img src="../../View/resources/img/follower/profile_img_test1.png" class="img-polaroid img-large"/>
+                                        </div>
+                                        <div class="span7">
+                                            <h5>ANGLED6</h5>
+                                            <p>于2012年12月10日11:36上传<font class="text-error">3</font>张新照片！</p>
+                                            <p>通过网页版客户端</p>
+                                            <i class="icon-map-marker"></i><a class="location" href="#">五四广场</a>
+                                            <hr/>
+                                        </div>
+                                    </div><!--single img-info-->
+                                    <div class="row-fluid photo-info">
+                                        <div class="line_holder"></div>
+                                        <div class="span4">
+                                            <div class="span1"></div>
+                                            <img src="../../View/resources/img/follower/profile_img_test1.png" class="img-polaroid img-large"/>
+                                        </div>
+                                        <div class="span7">
+                                            <h5>ANGLED7</h5>
+                                            <p>于2012年12月10日11:36上传<font class="text-error">3</font>张新照片！</p>
+                                            <p>通过网页版客户端</p>
+                                            <i class="icon-map-marker"></i><a class="location" href="#">五四广场</a>
+                                            <hr/>
+                                        </div>
+                                    </div><!--single img-info-->
+                                    <div class="row-fluid photo-info">
+                                        <div class="line_holder"></div>
+                                        <div class="span4">
+                                            <div class="span1"></div>
+                                            <img src="../../View/resources/img/follower/profile_img_test1.png" class="img-polaroid img-large"/>
+                                        </div>
+                                        <div class="span7">
+                                            <h5>ANGLED8</h5>
+                                            <p>于2012年12月10日11:36上传<font class="text-error">3</font>张新照片！</p>
+                                            <p>通过网页版客户端</p>
+                                            <i class="icon-map-marker"></i><a class="location" href="#">五四广场</a>
+                                            <hr/>
+                                        </div>
+                                    </div><!--single img-info-->
+                                    <div class="row-fluid photo-info">
+                                        <div class="line_holder"></div>
+                                        <div class="span4">
+                                            <div class="span1"></div>
+                                            <img src="../../View/resources/img/follower/profile_img_test1.png" class="img-polaroid img-large"/>
+                                        </div>
+                                        <div class="span7">
+                                            <h5>ANGLED9</h5>
+                                            <p>于2012年12月10日11:36上传<font class="text-error">3</font>张新照片！</p>
+                                            <p>通过网页版客户端</p>
+                                            <i class="icon-map-marker"></i><a class="location" href="#">五四广场</a>
+                                            <hr/>
+                                        </div>
+                                    </div><!--single img-info-->
+                                    <div class="row-fluid photo-info">
+                                        <div class="line_holder"></div>
+                                        <div class="span4">
+                                            <div class="span1"></div>
+                                            <img src="../../View/resources/img/follower/profile_img_test1.png" class="img-polaroid img-large"/>
+                                        </div>
+                                        <div class="span7">
+                                            <h5>ANGLED10</h5>
+                                            <p>于2012年12月10日11:36上传<font class="text-error">3</font>张新照片！</p>
+                                            <p>通过网页版客户端</p>
+                                            <i class="icon-map-marker"></i><a class="location" href="#">五四广场</a>
+                                            <hr/>
+                                        </div>
+                                    </div><!--single img-info-->
+                                    <div class="pagination pagination-centered">
+                                        <ul>
+                                            <li><a href="#">&laquo;</a></li>
+                                            <li class="disabled"><a href="#">1</a></li>
+                                            <li><a href="#">2</a></li>
+                                            <li><a href="#">3</a></li>
+                                            <li><a href="#">4</a></li>
+                                            <li><a href="#">5</a></li>
+                                            <li><a href="#">&raquo;</a></li>
+                                        </ul>
+                                    </div>
+                                </div><!--tab1 ends-->
+                                <div class="tab-pane" id="bar">
+                                    <div class="row-fluid photo-info">
+                                        <div class="span4">
+                                            <a href="#myModal" class="no-link offset1" data-toggle="modal">
+                                                <img src="../../View/resources/img/follower/profile_img_test1.png" class="img-polaroid img-large"/>
+                                            </a>
+                                        </div>
+                                        <div class="span7">
+                                            <h5>BrianHan</h5>
+                                            <p>于2012年12月10日11:36上传<font class="text-error">3</font>张新照片！</p>
+                                            <p>通过网页版客户端</p>
+                                            <i class="icon-map-marker"></i><a class="location" href="#">五四广场</a>
+                                            <hr/>
+                                        </div>
+                                    </div><!--single img-info-->
+                                    <div class="row-fluid photo-info">
+                                        <div class="line_holder"></div>
+                                        <div class="span4">
+                                            <div class="span1"></div>
+                                            <img src="../../View/resources/img/follower/profile_img_test1.png" class="img-polaroid img-large"/>
+                                        </div>
+                                        <div class="span7">
+                                            <h5>Bill2</h5>
+                                            <p>于2012年12月10日11:36上传<font class="text-error">3</font>张新照片！</p>
+                                            <p>通过网页版客户端</p>
+                                            <i class="icon-map-marker"></i><a class="location" href="#">五四广场</a>
+                                            <hr/>
+                                        </div>
+                                    </div><!--single img-info-->
+                                    <div class="row-fluid photo-info">
+                                        <div class="line_holder"></div>
+                                        <div class="span4">
+                                            <div class="span1"></div>
+                                            <img src="../../View/resources/img/follower/profile_img_test1.png" class="img-polaroid img-large"/>
+                                        </div>
+                                        <div class="span7">
+                                            <h5>Howard3</h5>
+                                            <p>于2012年12月10日11:36上传<font class="text-error">3</font>张新照片！</p>
+                                            <p>通过网页版客户端</p>
+                                            <i class="icon-map-marker"></i><a class="location" href="#">五四广场</a>
+                                            <hr/>
+                                        </div>
+                                    </div><!--single img-info-->
+                                    <div class="row-fluid photo-info">
+                                        <div class="line_holder"></div>
+                                        <div class="span4">
+                                            <div class="span1"></div>
+                                            <img src="../../View/resources/img/follower/profile_img_test1.png" class="img-polaroid img-large"/>
+                                        </div>
+                                        <div class="span7">
+                                            <h5>皮卡丘4</h5>
+                                            <p>于2012年12月10日11:36上传<font class="text-error">3</font>张新照片！</p>
+                                            <p>通过网页版客户端</p>
+                                            <i class="icon-map-marker"></i><a class="location" href="#">五四广场</a>
+                                            <hr/>
+                                        </div>
+                                    </div><!--single img-info-->
+                                    <div class="row-fluid photo-info">
+                                        <div class="line_holder"></div>
+                                        <div class="span4">
+                                            <div class="span1"></div>
+                                            <img src="../../View/resources/img/follower/profile_img_test1.png" class="img-polaroid img-large"/>
+                                        </div>
+                                        <div class="span7">
+                                            <h5>黑猫警长5</h5>
+                                            <p>于2012年12月10日11:36上传<font class="text-error">3</font>张新照片！</p>
+                                            <p>通过网页版客户端</p>
+                                            <i class="icon-map-marker"></i><a class="location" href="#">五四广场</a>
+                                            <hr/>
+                                        </div>
+                                    </div><!--single img-info-->
+                                    <div class="row-fluid photo-info">
+                                        <div class="line_holder"></div>
+                                        <div class="span4">
+                                            <div class="span1"></div>
+                                            <img src="../../View/resources/img/follower/profile_img_test1.png" class="img-polaroid img-large"/>
+                                        </div>
+                                        <div class="span7">
+                                            <h5>葫芦娃－老大6</h5>
+                                            <p>于2012年12月10日11:36上传<font class="text-error">3</font>张新照片！</p>
+                                            <p>通过网页版客户端</p>
+                                            <i class="icon-map-marker"></i><a class="location" href="#">五四广场</a>
+                                            <hr/>
+                                        </div>
+                                    </div><!--single img-info-->
+                                    <div class="row-fluid photo-info">
+                                        <div class="line_holder"></div>
+                                        <div class="span4">
+                                            <div class="span1"></div>
+                                            <img src="../../View/resources/img/follower/profile_img_test1.png" class="img-polaroid img-large"/>
+                                        </div>
+                                        <div class="span7">
+                                            <h5>咿咿呀7</h5>
+                                            <p>于2012年12月10日11:36上传<font class="text-error">3</font>张新照片！</p>
+                                            <p>通过网页版客户端</p>
+                                            <i class="icon-map-marker"></i><a class="location" href="#">五四广场</a>
+                                            <hr/>
+                                        </div>
+                                    </div><!--single img-info-->
+                                    <div class="row-fluid photo-info">
+                                        <div class="line_holder"></div>
+                                        <div class="span4">
+                                            <div class="span1"></div>
+                                            <img src="../../View/resources/img/follower/profile_img_test1.png" class="img-polaroid img-large"/>
+                                        </div>
+                                        <div class="span7">
+                                            <h5>RoNDO8</h5>
+                                            <p>于2012年12月10日11:36上传<font class="text-error">3</font>张新照片！</p>
+                                            <p>通过网页版客户端</p>
+                                            <i class="icon-map-marker"></i><a class="location" href="#">五四广场</a>
+                                            <hr/>
+                                        </div>
+                                    </div><!--single img-info-->
+                                    <div class="row-fluid photo-info">
+                                        <div class="line_holder"></div>
+                                        <div class="span4">
+                                            <div class="span1"></div>
+                                            <img src="../../View/resources/img/follower/profile_img_test1.png" class="img-polaroid img-large"/>
+                                        </div>
+                                        <div class="span7">
+                                            <h5>ABACA9</h5>
+                                            <p>于2012年12月10日11:36上传<font class="text-error">3</font>张新照片！</p>
+                                            <p>通过网页版客户端</p>
+                                            <i class="icon-map-marker"></i><a class="location" href="#">五四广场</a>
+                                            <hr/>
+                                        </div>
+                                    </div><!--single img-info-->
+                                    <div class="row-fluid photo-info">
+                                        <div class="line_holder"></div>
+                                        <div class="span4">
+                                            <div class="span1"></div>
+                                            <img src="../../View/resources/img/follower/profile_img_test1.png" class="img-polaroid img-large"/>
+                                        </div>
+                                        <div class="span7">
+                                            <h5>十号球员10</h5>
+                                            <p>于2012年12月10日11:36上传<font class="text-error">3</font>张新照片！</p>
+                                            <p>通过网页版客户端</p>
+                                            <i class="icon-map-marker"></i><a class="location" href="#">五四广场</a>
+                                            <hr/>
+                                        </div>
+                                    </div><!--single img-info-->
+                                    <div class="pagination pagination-centered">
+                                        <ul>
+                                            <li><a href="#">&laquo;</a></li>
+                                            <li class="disabled"><a href="#">1</a></li>
+                                            <li><a href="#">2</a></li>
+                                            <li><a href="#">3</a></li>
+                                            <li><a href="#">4</a></li>
+                                            <li><a href="#">5</a></li>
+                                            <li><a href="#">&raquo;</a></li>
+                                        </ul>
+                                    </div>
+                                </div><!--tab2 ends-->
+                            </div><!--table content ends-->
+                        </div>
+                    </div><!--span8>span12-2 ends-->
+                </div>
+            </div><!--left col end-->
+            <div class="span4"><!--right col-->
+                <div class="row-fluid"><!--personal info-->
+                    <div class="span12 bg-gray">
+                        <div class="line_holder"></div>
+                        <div class="span7">
+                            <img src="{#$head_photo_big_thumbnail#}" class="img-polaroid img-large"/>
+                            <p></p>
+                            <i class="icon-map-marker"></i><a class="location" href="#">{#$location#}</a>
+                            <p></p>
+                        </div>
+                        <div class="span4">
+                            <br />
+                            <h4>{#$nick_name#}</h4>
+                            <h5 class="vip">VIP</h5>
+                            <p></p>
+                            <i class="icon-star"></i><h6>&nbsp;关注&nbsp;&nbsp;</h6><h6>{#$concern#}</h6><br />
+                            <i class="icon-heart"></i><h6>&nbsp;粉丝&nbsp;&nbsp;</h6><h6>{#$fans#}</h6><br />
+                            <i class="icon-user"></i><h6>&nbsp;贴友&nbsp;&nbsp;</h6><h6>{#$friends#}</h6><br />
+                        </div>
+                    </div>
+                </div><!--personal info end -->
+				<div class="row-fluid">
+                	<div class="line_holder">
+                    	<p></p>
+                    </div>
+                </div>                
+                <div class="row-fluid"><!--recommended friend-->
+                    <div class="span12 bg-gray">
+                        <div class="span12 red-bar">
+                            <div class="span4">
+                                <a href="#"><p class="bar-title">贴友圈子</p></a>
+                            </div>
+                        </div><!--red top bar of the block end-->
+                        <div class="span12">
+                        	{#foreach key=k item=index from=$recommendation_friends#}
+                        	<div class="row-fluid rec-friend">
+                                <div class="line_holder"></div>
+                            	<div class="span4">
+                                	<img src="{$recommendation_friends[$k].head_photo}" class="img-polaroid  img-mid"/>
+                                </div>
+                                <div class="span5">
+                                	<h5>{#$recommendation_friends[$k].nick_name#}</h5>
+                                    <p class="no-space">有<font class="text-error">{#$recommendation_friends[$k].common_friends_num#}</font>个共同贴友</p>
+                        			<i class="icon-map-marker"></i><a class="location" href="#">{#$recommendation_friends[$k].province#},{#$recommendation_friends[$k].city#}</a>
+                                </div>
+                                <div class="span2">
+                                	<a href="#"><p class="no-space">忽略</p></a>
+                                    <a href="#"><p>关注</p></a>
+                                </div>
+                            </div>
+                        	{#/foreach#}
+                        	<div class="row-fluid rec-friend">
+                                <div class="line_holder"></div>
+                            	<div class="span4">
+                                	<img src="../../View/resources/img/follower/profile_img_test1.png" class="img-polaroid  img-mid"/>
+                                </div>
+                                <div class="span5">
+                                	<h5>刘嘉阳</h5>
+                                    <p class="no-space">有<font class="text-error">8</font>个共同贴友</p>
+                        			<i class="icon-map-marker"></i><a class="location" href="#">青岛，中国</a>
+                                </div>
+                                <div class="span2">
+                                	<a href="#"><p class="no-space">忽略</p></a>
+                                    <a href="#"><p>关注</p></a>
+                                </div>
+                            </div><!--single recommended friend info end-->
+                        	<div class="row-fluid rec-friend">
+                                <div class="line_holder"></div>
+                            	<div class="span4">
+                                	<img src="../../View/resources/img/follower/profile_img_test1.png" class="img-polaroid  img-mid"/>
+                                </div>
+                                <div class="span5">
+                                	<h5>孙小圣</h5>
+                                    <p class="no-space">有<font class="text-error">6</font>个共同贴友</p>
+                        			<i class="icon-map-marker"></i><a class="location" href="#">青岛，中国</a>
+                                </div>
+                                <div class="span2">
+                                	<a href="#"><p class="no-space">忽略</p></a>
+                                    <a href="#"><p>关注</p></a>
+                                </div>
+                            </div><!--single recommended friend info end-->
+                        	<div class="row-fluid rec-friend">
+                                <div class="line_holder"></div>
+                            	<div class="span4">
+                                	<img src="../../View/resources/img/follower/profile_img_test1.png" class="img-polaroid  img-mid"/>
+                                </div>
+                                <div class="span5">
+                                	<h5>张小懒</h5>
+                                    <p class="no-space">有<font class="text-error">4</font>个共同贴友</p>
+                        			<i class="icon-map-marker"></i><a class="location" href="#">青岛，中国</a>
+                                </div>
+                                <div class="span2">
+                                	<a href="#"><p class="no-space">忽略</p></a>
+                                    <a href="#"><p>关注</p></a>
+                                </div>
+                            </div><!--single recommended friend info end-->
+                        	<div class="row-fluid rec-friend">
+                                <div class="line_holder"></div>
+                            	<div class="span4">
+                                	<img src="../../View/resources/img/follower/profile_img_test1.png" class="img-polaroid  img-mid"/>
+                                </div>
+                                <div class="span5">
+                                	<h5>韩</h5>
+                                    <p class="no-space">有<font class="text-error">2</font>个共同贴友</p>
+                        			<i class="icon-map-marker"></i><a class="location" href="#">青岛，中国</a>
+                                </div>
+                                <div class="span2">
+                                	<a href="#"><p class="no-space">忽略</p></a>
+                                    <a href="#"><p>关注</p></a>
+                                </div>
+                            </div><!--single recommended friend info end-->
+                        	<div class="row-fluid rec-friend">
+                                <div class="line_holder"></div>
+                            	<div class="span4">
+                                	<img src="../../View/resources/img/follower/profile_img_test1.png" class="img-polaroid  img-mid"/>
+                                </div>
+                                <div class="span5">
+                                	<h5>SISI</h5>
+                                    <p class="no-space">有<font class="text-error">1</font>个共同贴友</p>
+                        			<i class="icon-map-marker"></i><a class="location" href="#">青岛，中国</a>
+                                </div>
+                                <div class="span2">
+                                	<a href="#"><p class="no-space">忽略</p></a>
+                                    <a href="#"><p>关注</p></a>
+                                </div>
+                            </div><!--single recommended friend info end-->
+                            <div class="line_holder"></div>
+                        </div>
+                    </div>
+                </div><!--recommended friend end-->
+				<div class="row-fluid">
+                	<div class="line_holder">
+                    	<p></p>
+                    </div>
+                </div>                
+                <div class="row-fluid"><!--same-interest friend-->
+                    <div class="span12 bg-gray">
+                        <div class="span12 red-bar">
+                            <div class="span4">
+                                <a href="#"><p class="bar-title">兴趣圈子</p></a>
+                            </div>
+                        </div><!--red top bar of the block end-->
+                        <div class="span12">
+                        	<div class="row-fluid rec-friend">
+                                <div class="line_holder"></div>
+                            	<div class="span4">
+                                	<img src="../../View/resources/img/follower/profile_img_test1.png" class="img-polaroid  img-mid"/>
+                                </div>
+                                <div class="span5">
+                                	<h5>刘嘉阳</h5>
+                                    <p class="no-space">有<font class="text-error">8</font>个共同兴趣标签</p>
+                        			<i class="icon-map-marker"></i><a class="location" href="#">青岛，中国</a>
+                                </div>
+                                <div class="span2">
+                                	<a href="#"><p class="no-space">忽略</p></a>
+                                    <a href="#"><p>关注</p></a>
+                                </div>
+                            </div><!--single recommended friend info end-->
+                        	<div class="row-fluid rec-friend">
+                                <div class="line_holder"></div>
+                            	<div class="span4">
+                                	<img src="../../View/resources/img/follower/profile_img_test1.png" class="img-polaroid  img-mid"/>
+                                </div>
+                                <div class="span5">
+                                	<h5>孙小圣</h5>
+                                    <p class="no-space">有<font class="text-error">6</font>个共同兴趣标签</p>
+                        			<i class="icon-map-marker"></i><a class="location" href="#">青岛，中国</a>
+                                </div>
+                                <div class="span2">
+                                	<a href="#"><p class="no-space">忽略</p></a>
+                                    <a href="#"><p>关注</p></a>
+                                </div>
+                            </div><!--single recommended friend info end-->
+                        	<div class="row-fluid rec-friend">
+                                <div class="line_holder"></div>
+                            	<div class="span4">
+                                	<img src="../../View/resources/img/follower/profile_img_test1.png" class="img-polaroid  img-mid"/>
+                                </div>
+                                <div class="span5">
+                                	<h5>张小懒</h5>
+                                    <p class="no-space">有<font class="text-error">4</font>个共同兴趣标签</p>
+                        			<i class="icon-map-marker"></i><a class="location" href="#">青岛，中国</a>
+                                </div>
+                                <div class="span2">
+                                	<a href="#"><p class="no-space">忽略</p></a>
+                                    <a href="#"><p>关注</p></a>
+                                </div>
+                            </div><!--single recommended friend info end-->
+                        	<div class="row-fluid rec-friend">
+                                <div class="line_holder"></div>
+                            	<div class="span4">
+                                	<img src="../../View/resources/img/follower/profile_img_test1.png" class="img-polaroid  img-mid"/>
+                                </div>
+                                <div class="span5">
+                                	<h5>韩</h5>
+                                    <p class="no-space">有<font class="text-error">2</font>个共同兴趣标签</p>
+                        			<i class="icon-map-marker"></i><a class="location" href="#">青岛，中国</a>
+                                </div>
+                                <div class="span2">
+                                	<a href="#"><p class="no-space">忽略</p></a>
+                                    <a href="#"><p>关注</p></a>
+                                </div>
+                            </div><!--single recommended friend info end-->
+                        	<div class="row-fluid rec-friend">
+                                <div class="line_holder"></div>
+                            	<div class="span4">
+                                	<img src="../../View/resources/img/follower/profile_img_test1.png" class="img-polaroid  img-mid"/>
+                                </div>
+                                <div class="span5">
+                                	<h5>SISI</h5>
+                                    <p class="no-space">有<font class="text-error">1</font>个共同兴趣标签</p>
+                        			<i class="icon-map-marker"></i><a class="location" href="#">青岛，中国</a>
+                                </div>
+                                <div class="span2">
+                                	<a href="#"><p class="no-space">忽略</p></a>
+                                    <a href="#"><p>关注</p></a>
+                                </div>
+                            </div><!--single recommended friend info end-->
+                            <div class="line_holder"></div>
+                        </div>
+                    </div>
+                </div><!--same-interest friend end-->
+
+            </div><!--right col end-->
+        </div>
+        
+	</div><!--main_content ends-->
+    <div class="footer">
+    	<div class="copyright">
+        	<p>Copyright© 2012-2022 Photowall Inc, All Rights Reserved.</p>
+            <p>照片墙 版权所有</p>
+            <a href="http://www.tangerteq.com"><p>Powered by Tanger TEQ LLC.</p></a>
+        </div>
+    </div><!--footer ends-->
+
+    <!-- Modal Photo Popup-->
+    <div id="myModal" class="modal hide fade " tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cancel_upload();">×</button>
+            <h4 id="myModalLabel">冰天雪地 (3/15)</h4>
+        </div>
+        <div class="modal-body photo-popup">
+            <div class="row-fluid">
+                <div class="span12 img-box">
+                    <img class="img-polaroid img-orig" width="600" src="../../View/resources/img/photos/snow-covered-trees.jpg" />
+                    <p></p>
+                    <p class="no-space">郊外美丽的雪景，一片银白</p>
+                    <hr />
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span8">
+                    <form class="form-inline">
+                        <input type="text" style="width:319px;" placeholder="评论此照片">
+                        <label><sub class="muted">0/100字</sub></label>
+                        <button type="submit" class="btn btn-small">发表</button>
+                    </form>
+                    <div class="row-fluid" id="comment-box">
+                        <div class="row-fluid"><!--single comment starts-->
+                            <div class="span1">
+                                <img class="img-small" src="../../View/resources/img/follower/profile_img_test1.png" alt="id-3223-profile-img" >
+                            </div>
+                            <div class="span10">
+                                <p class="comment-small"><a class="user-name" href="#">阿Y</a> 回复<a class="user-name" href="#">ANGLED1</a>: 哈哈，是啊，景色确实很好啊！</p>
+                                <p class="muted"><sub>2013-3-29 22:20</sub></p>
+                                <hr class="no-space"/>
+                            </div>
+                            <div class="span1">
+                                <a href="#"><p>回复</p></a>
+                            </div>
+                        </div><!--single comment ends-->
+                        <div class="row-fluid"><!--single comment starts-->
+                            <div class="span1">
+                                <img class="img-small" src="../../View/resources/img/follower/profile_img_test1.png" alt="id-3223-profile-img" >
+                            </div>
+                            <div class="span10">
+                                <p class="comment-small"><a class="user-name" href="#">ANGLED1</a>: 下雪了啊 很漂亮啊。这是在哪里？是在你那边吗？过一阵我过去还能看得到么？</p>
+                                <p class="muted"><sub>2013-3-22 14:20</sub></p>
+                                <hr class="no-space"/>
+                            </div>
+                            <div class="span1">
+                                <a href="#"><p>回复</p></a>
+                            </div>
+                        </div><!--single comment ends-->
+                        <div class="row-fluid"><!--single comment starts-->
+                            <div class="span1">
+                                <img class="img-small" src="../../View/resources/img/follower/profile_img_test1.png" alt="id-3223-profile-img" >
+                            </div>
+                            <div class="span10">
+                                <p class="comment-small"><a class="user-name" href="#">刘嘉阳</a>: 这是哪里啊？这个季节还有雪。</p>
+                                <p class="muted"><sub>2013-3-21 05:10</sub></p>
+                                <hr class="no-space"/>
+                            </div>
+                            <div class="span1">
+                                <a href="#"><p>回复</p></a>
+                            </div>
+                        </div><!--single comment ends-->
+                    </div>
+                </div>
+                <div class="span4" id="img-preview">
+                    <div class="row-fluid"><a class="offset11 no-space" id="load-pre-imgs" href="#"><i class="icon-chevron-up"></i></a></div>
+                    <div class="row-fluid photo-preview-row">
+                        <div class="span4" id="preview-img1"><img src="../../View/resources/img/photos/thumbnails/beauty_thumbnails.jpg" /></div>
+                        <div class="span4" id="preview-img2"><img src="../../View/resources/img/photos/thumbnails/bird_thumbnails.jpg" /></div>
+                        <div class="span4" id="preview-img3"><img src="../../View/resources/img/photos/thumbnails/car_thumbnails.jpg" /></div>
+                    </div>
+                    <div class="row-fluid photo-preview-row">
+                        <div class="span4" id="preview-img4"><img src="../../View/resources/img/photos/thumbnails/child_thumbnails.jpg" /></div>
+                        <div class="span4" id="preview-img5"><img src="../../View/resources/img/photos/thumbnails/disney_thumbnails.jpg" /></div>
+                        <div class="span4" id="preview-img6"><img src="../../View/resources/img/photos/thumbnails/flower_thumbnails.jpg" /></div>
+                    </div>
+                    <div class="row-fluid photo-preview-row">
+                        <div class="span4" id="preview-img7"><img src="../../View/resources/img/photos/thumbnails/horse_thumbnails.jpg" /></div>
+                        <div class="span4" id="preview-img8"><img src="../../View/resources/img/photos/thumbnails/lake_thumbnails.jpg" /></div>
+                        <div class="span4" id="preview-img9"><img src="../../View/resources/img/photos/thumbnails/plane_thumbnails.jpg" /></div>
+                    </div>
+                    <div class="row-fluid"><a class="offset11 no-space" id="load-next-imgs" href="#"><i class="icon-chevron-down"></i></a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal Photo Upload-->
+    <div id="uploadModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h4><i class="icon-camera icon-white"></i> 上传照片</h4>
+        </div>
+        <form action="../photo/store_info_to_DB.php" method="post" id="upload_final" >
+        <div class="modal-body photo-upload-container" id="modal_body">
+            <!-- <div class="upload-img">
+                <a href="#newSinglePhotoModal" data-toggle="modal">
+                    <img src="../../View/resources/img/follower/profile_img_test1.png" class="img-polaroid img-large"/>
+                </a>
+                <div class="upload-descript-box">
+                    <span class="descript-arrow"></span>
+                    <i class="icon-remove upload-remove-img" onclick="removeImg()" title="删除"></i></a>
+                    <textarea placeholder="添加描述" maxlength="240" class="upload-descript-content"></textarea>
+                </div>
+            </div>  -->
+        </div>
+        <div class="modal-footer row-fluid photo-upload-footer">
+            <div class="span5">
+                <div class="row-fluid" style="padding-top: 7px;">
+                    <a href="#newAlbumModal" data-toggle="modal"><h4 class="text-error span5" style="line-height:10px;">+ 新建相册</h4></a>
+                    <select class="span7" name="album_id" id="album_id">
+                        <!-- <option selected="selected" disabled>选择相册</option>
+                        <option>1</option>
+                        <option>2</option> -->
+                        {#$album_html#}
+                    </select>
+                </div>
+            </div>
+            <div class="span7">
+                <div class="span4">
+                    <p style="font-size:10px;">按住Ctrl键可多选照片<br/>每次最多上传100张照片</p>
+                </div>
+                <a href="#" class="btn btn-large btn-primary" onclick='javascript:finish_upload_photo();'>完成上传</a>
+        </form>
+        <form action="../photo/add_photo_action.php" method="post" enctype="multipart/form-data" id="upload_photo_form" >
+            <!--   <a href="#" class="btn btn-large">选择照片</a> -->
+            <input type="file" name="photoimg" id="photoimg"  class="btn btn-large"/>
+        </form>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal Photo New Album-->
+    <div id="newAlbumModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h4><i class="icon-plus icon-white"></i> 新建相册</h4>
+        </div>
+        <form class="form-horizontal" id="create_album" method="post" action="../album/add_album_action.php">
+            <div class="modal-body new-album-container row-fluid">
+                <div class="span6 offset3">
+                    <div class="control-group">
+                        <label class="control-label" for="albumName">相册名称</label>
+                        <div class="controls">
+                            <input type="text" id="albumName" placeholder="新相册" name="albumName">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="albumPrivacy">阅览权限</label>
+                        <div class="controls">
+                            <select id="albumPrivacy" name="albumPrivacy">
+                                <option value="albumPrivacy-everyone">所有人可见</option>
+                                <option value="albumPrivacy-friend">贴友可见</option>
+                                <option value="albumPrivacy-follow">关注可见</option>
+                                <option value="albumPrivacy-fans">粉丝可见</option>
+                                <option value="albumPrivacy-self">只自己可见</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="albumDiscription">相册简介</label>
+                        <div class="controls">
+                            <textarea type="password" id="albumDiscription" placeholder="填写相册简介..." name="albumDiscription"></textarea>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="albumPassword">设定密码</label>
+                        <div class="controls">
+                            <input type="password" id="albumPassword" name="albumPassword" placeholder="选填">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-large" data-dismiss="modal" aria-hidden="true">取消新建</a>
+                <button type="submit" class="btn btn-large btn-primary">完成新建</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Modal Photo New Single Photo-->
+    <div id="newSinglePhotoModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h4><i class="icon-camera icon-white"></i> 贴照设定</h4>
+        </div>
+        <div class="modal-body new-single-photo-container">
+                <div class="img-box">
+                    <img class="img-polaroid img-orig" src="../../View/resources/img/photos/snow-covered-trees.jpg" id="at_people" />
+                </div>
+            <form class="form-horizontal">
+                <div class="row-fluid" style="margin-top:10px;">
+                    <div class="span4">
+                        <div class="control-group no-space">
+                            <label class="control-label span6" for="postToFriend">贴给指定贴友</label>
+                            <div class="controls span6">
+                                <input type="text" id="postToFriend" name="postToFriend" class="input-small" />
+                            </div>
+                        </div>
+                        <div class="control-group no-space">
+                            <label class="control-label span6" for="postToTag">贴给标签分组</label>
+                            <div class="controls span6">
+                                <select id="postToTag" name="postToTag" class="input-small">
+                                    <option value="food">美食</option> <!--load groups names and id to this select-->
+                                    <option value="view">风景</option>
+                                    <option value="soccer">足球</option>
+                                    <option value="basketball">篮球</option>
+                                    <option value="girls">美女</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group no-space">
+                            <label class="control-label span6" for="postToAll">贴给所有粉丝</label>
+                            <div class="controls span6">
+                                <select id="postToFans" name="postToFans" class="input-small">
+                                    <option value="yes">是</option>
+                                    <option value="no">否</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="span7">
+                        <div class="single-photo-descript-box">
+                            <span class="descript-arrow"></span>
+                            <textarea placeholder="添加描述" name="mark_description" id="mark_description" col="50" row="8" class="upload-descript-content"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="btn btn-large" data-dismiss="modal" aria-hidden="true">取消设定</a>
+            <button type="button" onclick="finish_mark_people()" class="btn btn-large btn-primary">完成设定</button>
+        </div>
+    </div>
+
+
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script type="text/javascript" src="../../View/resources/js/bootstrap-tab.js"></script>
+    <script type='text/javascript' src="http://twitter.github.com/bootstrap/assets/js/bootstrap-typeahead.js"></script>
+    <script type='text/javascript' src="../../View/resources/js/mention.js"></script>
+    <script>
+        $(function () {
+            $('#myTab a:last').tab('show');
+        })
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".upload-remove-img").tooltip({
+                'trigger': 'hover',
+                'placement': 'top'
+            });
+            $('.upload-remove-img').click(function() {$(this).parents('.upload-img').fadeOut("slow",function(){$(this).remove()}); }); /*remove upload img*/
+
+        });
+    </script>
+    <script>/*Mock data*/
+    $(document).ready(function(){
+        $("#postToFriend").mention({
+        	users:{#$users#}
+            // users: [{
+                // name: 'Lindsay Made',
+                // username: 'LindsayM',
+                // image: 'http://placekitten.com/25/25'
+            // }, {
+                // name: 'Rob Dyrdek',
+                // username: 'robdyrdek',
+                // image: 'http://placekitten.com/25/24'
+            // }]
+          });
+        });
+    </script>
+    <!-- prepare for ajax tab load
+    <script>
+    $(function() {
+        var baseURL = 'http://yourdomain.com/ajax/';
+        //load content for first tab and initialize
+        $('#home').load(baseURL+'home', function() {
+            $('#myTabs').tab(); //initialize tabs
+        });
+        $('#myTabs').bind('show', function(e) {
+           var pattern=/#.+/gi //use regex to get anchor(==selector)
+           var contentID = e.target.toString().match(pattern)[0]; //get anchor
+           //load content for selected tab
+            $(contentID).load(baseURL+contentID.replace('#',''), function(){
+                $('#myTabs').tab(); //reinitialize tabs
+            });
+        });
+    });
+    </script>-->
+    <!-- Placed at the end of the document so the pages load faster -->
+</div>
+</body>
+</html>
